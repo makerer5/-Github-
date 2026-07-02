@@ -1,0 +1,13 @@
+# 查看所有节点剩余CPU的情况
+sinfo -N -o "%N %t %C"
+# 查所有节点的 CPU、内存、GPU
+sinfo -N -o "%N %P %t %C %m %e %G"
+# 查看某个分区各节点内存 以Gb格式查看
+sinfo -N -o "%20N %12P %10t %12m %12e" | awk '
+NR==1 {
+  printf "%-20s %-12s %-10s %-12s %-12s\n", "NODE", "PARTITION", "STATE", "MEM_GB", "FREE_GB"
+  next
+}
+{
+  printf "%-20s %-12s %-10s %-12.1f %-12.1f\n", $1, $2, $3, $4/1024, $5/1024
+}'
